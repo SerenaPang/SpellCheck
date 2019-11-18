@@ -17,14 +17,14 @@ public class TrieST<Value> {
 	/*
 	 * Geting the specific string from the trie
 	 */
-	public Value get(String key) {
+	public String get(String key) {
 
 		Node x = get(root, key, 0);
 
 		if (x == null)
-
 			return null;
-		return (Value) x.val;
+		
+		return key;
 	}
 
 	private Node get(Node x, String key, int d) {

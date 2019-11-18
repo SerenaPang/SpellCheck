@@ -37,18 +37,14 @@ public class FileReaderAndWriter {
 	 * @param path     the file path to use
 	 * @throws IOException
 	 */
-	public static void writeFile(Path outputFile, List<String> words) throws IOException {
+	public static void writeFile(Path outputFile, List<List<String>> listOfwords) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8)) {
-			int size = words.size();
-			for (int i = 0; i < size; i++) {
-				String str = words.get(i);
-				writer.write(str);
+			for (List<String> list : listOfwords) {
+				for (String word : list) {
+					writer.write(word.trim());
+					writer.write(" ");
+				}
 				writer.write("\n");
-//				if (i < size - 1) {
-//					writer.write("\n");
-//				}
-//				writer.close();
-
 			}
 		}
 

@@ -1,4 +1,9 @@
 # SpellCheck
 
-Contains the implementation of a tria and how to search words on it.
 
+To execute the file run:
+
+```shell
+javac *.java
+java SpellCheckerMain inputFile.txt outputFile.txt
+```
