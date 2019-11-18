@@ -1,8 +1,8 @@
+
 /*This class uses an R-way trie to implement a symbol table.
  * 
  * 
  * */
-
 
 public class TrieST<Value> {
 
@@ -15,7 +15,7 @@ public class TrieST<Value> {
 	}
 
 	/*
-	 * Geting the specific sting from the trie
+	 * Geting the specific string from the trie
 	 * */
 	public Value get(String key) {
 
@@ -49,21 +49,21 @@ public class TrieST<Value> {
 		
 	}
 	
-	private Node put(Node x, String key, Value val, int d) {
+	private Node put(Node x, String key, Value val, int currentIndex) {
 		
 		//change value associated with key if in subtries rooted at x.
 		
 		if(x == null)
 			x = new Node();
 
-		if(d == key.length()) {
+		if(currentIndex == key.length()) {
 			
 			x.val = val;
 			return x;
 		}
 		
-		char c = key.charAt(d);//use dth key char to identify subtrie
-		x.next[c] = put(x.next[c],key, val, d+1);
+		char c = key.charAt(currentIndex);//use dth key char to identify subtrie
+		x.next[c] = put(x.next[c],key, val, currentIndex+1);
 		return x;
 		
 	}
@@ -95,7 +95,99 @@ public class TrieST<Value> {
 	}
 	
 	
+	public Iterable<String> keys(){
+		
+		return keysWithPrefix("");
+	}
+	
+	public Iterable<String> keysWithPrefix(String pre){
+		Queue<String> q = new Queue<String>();
+		collect(get(root, pre, 0),pre, q);
+		return q;
+	}
+	
+	private void collect(Node x, String pre, Queue<String> q) {
+		if(x == null) 
+			return;
+		if(x.val != null) q.enqueue(pre);
+		
+		for(char c = 0; c < R; c++)
+			collect(x.next[c], pre+c, q);
+	}
+	
+	public Iterable<String> keysThatMatch(String pat){
+		Queue<String> q = new Queue<String>();
+		collect(root, "", pat, q);
+		return q;
+	}
+	
+	public void collect(Node x, String pre, String pat, Queue<String> q) {
+		int d = pre.length();
+		if(x == null)
+			return;
+		if(d == pat.length() && x.val != null) {
+			System.out.println("TrieST.collect() enqueuing");
+			q.enqueue(pre);
+		}
+		if(d == pat.length())
+			return;
+		
+		char next = pat.charAt(d);
+		for(char c = 0; c < R; c++)
+			if(next == '.' || next == c)
+				collect(x.next[c], pre+c, pat, q);
+	}
+	
+	public String longestPrefix(String s) {
+		int length = search(root, s, 0, 0);
+		return s.substring(0, length);
+	}
+	
+	private int search(Node x, String s, int d, int length) {
+		if(x == null)
+			return length;
+		if(x.val != null) 
+			length = d;
+		if(d == s.length()) 
+			return length;
+		char c = s.charAt(d);
+		
+		return search(x.next[c], s, d +1, length);
+	}
+	
+	
 	public static void main(String[] args) {
+		
+		
+		TrieST<String>  mytrie = new TrieST<String>();
+		
+		mytrie.put("she", "0");
+		mytrie.put("sells", "1");
+		mytrie.put("sea", "2");
+		mytrie.put("alphabet", "3");
+		mytrie.put("alpha", "4");
+		
+		String value  = mytrie.get("se");
+		System.out.println("Getting value for 'sells' " + value);
+		
+		int sizeOfTrie = mytrie.size();
+		System.out.println("Size of the Trie: " + sizeOfTrie);
+			
+		//keys that matches "sh" will be return as a queue of strings
+		Iterable<String> keysThatMatch = mytrie.keysThatMatch("sells");
+		//assigned that queue to this queue		
+		System.out.println("Absolute Match: ");
+		for(String key : keysThatMatch) {
+			System.out.println(key);
+		}
+		
+		Iterable<String> keysThatMatchPrefix = mytrie.keysWithPrefix("alph");
+		System.out.println("Prefix Matches: ");
+		for(String key : keysThatMatchPrefix) {
+			System.out.println(key);	
+		}
+		
+	
 
 	}
 
